@@ -28,11 +28,11 @@ class ActiveTodoCountBloc
           .where((Todo todo) => !todo.completed)
           .toList()
           .length;
-      // 생성하면서 이벤트를 발생시킴
+      // 대상 state 를 listen 하고 있다가 대상 state가 변경되면 현재 이벤트를 발생시키고
       add(ActiveTodoCountCalculatedEvent(activeTodoCount: activeTodoCount));
     });
 
-    // 이벤트가 발생하면 State를 변경시킴.
+    // 현재 이벤트가 발생하면 현재 State를 변경시킴.
     on<ActiveTodoCountCalculatedEvent>((event, emit) {
       emit(state.copyWith(activeTodoCount: event.activeTodoCount));
     });
