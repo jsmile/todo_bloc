@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/blocs.dart';
-import '../../utils/debounce.dart';
+// import '../../utils/debounce.dart';
 
 import '../../models/todo_model.dart';
 
 class SearchAndFilterTodo extends StatelessWidget {
-  final Debounce debounce = Debounce(milliseconds: 1000);
+  // final Debounce debounce = Debounce(milliseconds: 1000);  rxdurt 패키지로 인해 불필요
 
   // non constant property 인 debounce가 있으므로 const 생성자를 사용할 수 없음.
-  SearchAndFilterTodo({super.key});
+  const SearchAndFilterTodo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +23,15 @@ class SearchAndFilterTodo extends StatelessWidget {
             prefixIcon: Icon(Icons.search),
           ),
           onChanged: (String? newSearchTerm) {
-            debounce.run(() {
-              if (newSearchTerm != null) {
-                // Cubit 의 함수를 직접 호출하는 경우에는 .add( event ) 로 변경.
-                // context.read<TodoSearchBloc>().setSearchTerm(newSearchTerm);
-                context.read<TodoSearchBloc>().add(
-                    TodoSearchTermChangedEvent(newSearchTerm: newSearchTerm));
-              }
-            });
+            // rxdart 패키지가 있으므로 debounce.run() 불필요
+            // debounce.run(() {
+            if (newSearchTerm != null) {
+              // Cubit 의 함수를 직접 호출하는 경우에는 .add( event ) 로 변경.
+              // context.read<TodoSearchBloc>().setSearchTerm(newSearchTerm);
+              context.read<TodoSearchBloc>().add(
+                  TodoSearchTermChangedEvent(newSearchTerm: newSearchTerm));
+            }
+            // });
           },
         ),
         const SizedBox(
