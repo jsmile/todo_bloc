@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../cubits/active_todo_count/active_todo_count_cubit.dart';
+import '../../blocs/active_todo_count/active_todo_count_bloc.dart';
 
 class TodoHeader extends StatelessWidget {
   const TodoHeader({super.key});
@@ -26,7 +26,8 @@ class TodoHeader extends StatelessWidget {
         //   },
         // ),
         Text(
-          '${context.watch<ActiveTodoCountCubit>().state.activeTodoCount} items left',
+          // Cubit 의 함수를 직접 호출하는 경우가 아니면 Cubit을 Bloc 로 변경하면 됨.
+          '${context.watch<ActiveTodoCountBloc>().state.activeTodoCount} items left',
           style: const TextStyle(
             color: Colors.green,
             fontSize: 20.0,

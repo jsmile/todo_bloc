@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubits/cubits.dart';
+import '../../blocs/blocs.dart';
 import '../../utils/debounce.dart';
 
 import '../../models/todo_model.dart';
@@ -25,7 +25,10 @@ class SearchAndFilterTodo extends StatelessWidget {
           onChanged: (String? newSearchTerm) {
             debounce.run(() {
               if (newSearchTerm != null) {
-                context.read<TodoSearchCubit>().setSearchTerm(newSearchTerm);
+                // Cubit 의 함수를 직접 호출하는 경우에는 .add( event ) 로 변경.
+                // context.read<TodoSearchBloc>().setSearchTerm(newSearchTerm);
+                context.read<TodoSearchBloc>().add(
+                    TodoSearchTermChangedEvent(newSearchTerm: newSearchTerm));
               }
             });
           },
@@ -60,14 +63,20 @@ class SearchAndFilterTodo extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        context.read<TodoFilterCubit>().chageFilter(filter);
+        // Cubit 의 함수를 직접 호출하는 경우에는 .add( event ) 로 변경.
+        // context.read<TodoFilterCubit>().chageFilter(filter);
+        context
+            .read<TodoFilterBloc>()
+            .add(TodoFilterChangedEvent(newfilter: filter));
       },
     );
   }
 
   // TodoList 의 State에 따라 색상을 변경.
   Color getTextColor(BuildContext context, Filter filter) {
-    final currentFilter = context.watch<TodoFilterCubit>().state.filter;
+    // Cubit 의 함수를 직접 호출하는 경우가 아니면 Cubit을 Bloc 로 변경하면 됨
+    // final currentFilter = context.watch<TodoFilterCubit>().state.filter;
+    final currentFilter = context.watch<TodoFilterBloc>().state.filter;
     return (currentFilter == filter) ? Colors.blue : Colors.black;
   }
 }

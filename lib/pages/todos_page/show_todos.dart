@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubits/cubits.dart';
+import '../../blocs/blocs.dart';
 
 import '../../models/todo_model.dart';
 
@@ -9,7 +9,9 @@ class ShowTodos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todos = context.watch<FilteredTodosCubit>().state.filteredTodos;
+    // Cubit 의 함수를 직접 호출하는 경우가 아니면 Cubit을 Bloc 로 변경하면 됨
+    // final todos = context.watch<FilteredTodosCubit>().state.filteredTodos;
+    final todos = context.watch<FilteredTodosBloc>().state.filteredTodos;
 
     return ListView.separated(
       primary: false,
@@ -27,7 +29,11 @@ class ShowTodos extends StatelessWidget {
           secondaryBackground: showBackground(1),
           child: TodoItem(todo: todos[index]),
           onDismissed: (_) {
-            context.read<TodoListCubit>().removeTodo(todos[index]);
+            // Cubit 의 함수를 직접 호출하는 경우에는 .add( event ) 로 변경.
+            // context.read<TodoListCubit>().removeTodo(todos[index]);
+            context
+                .read<TodoListBloc>()
+                .add(TodoRemovedEvent(todo: todos[index]));
           },
           confirmDismiss: (direction) {
             return showDialog(
@@ -133,10 +139,14 @@ class _TodoItemState extends State<TodoItem> {
                         () {
                           bEmpty = _textController.text.isEmpty ? true : false;
                           if (!bEmpty) {
-                            context.read<TodoListCubit>().editTodo(
-                                  widget.todo.id,
-                                  _textController.text,
-                                );
+                            // Cubit 의 함수를 직접 호출하는 경우에는 .add( event ) 로 변경.
+                            // context.read<TodoListCubit>().editTodo(
+                            //   widget.todo.id,
+                            //   _textController.text,
+                            // );
+                            context.read<TodoListBloc>().add(TodoEditedEvent(
+                                id: widget.todo.id,
+                                todoDesc: _textController.text));
                             Navigator.pop(context);
                           }
                         },
@@ -152,7 +162,11 @@ class _TodoItemState extends State<TodoItem> {
       leading: Checkbox(
         value: widget.todo.completed,
         onChanged: (bool? checked) {
-          context.read<TodoListCubit>().toggleTodo(widget.todo.id);
+          // Cubit 의 함수를 직접 호출하는 경우가 아니면 Cubit을 Bloc 로 변경하면 됨
+          // context.read<TodoListCubit>().toggleTodo(widget.todo.id);
+          context
+              .read<TodoListBloc>()
+              .add(TodoToggledEvent(id: widget.todo.id));
         },
       ),
       // widget 자신을 참조할 때, widget. 으로 접근함.
